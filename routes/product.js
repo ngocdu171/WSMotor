@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
             res.json(results)
         }
     })
-})
+});
 
 router.get('/:idProduct', async (req, res) => {
     const item = await Product.find({idProduct: req.params.idProduct})
@@ -21,7 +21,7 @@ router.get('/:idProduct', async (req, res) => {
         else {
             res.json(item);
         }
-})
+});
 
 router.post('/addProduct', (req, res) => {
     const item = new Product({
@@ -46,7 +46,20 @@ router.post('/addProduct', (req, res) => {
     .catch(err => {
         res.json(err);
     })
-    //res.send("route post");
+});
+
+router.put('/:idProduct', (req, res) => {
+    res.json({message: "route update"});
+})
+///////delete/////
+router.delete('/:idProduct', async (req, res) => {
+    await Product.remove({idProduct: req.params.idProduct})
+    .then(results => {
+        res.json(results);
+    })
+    .catch(err => {
+        res.json({err});
+    })
 })
 
 module.exports = router;
