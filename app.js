@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 
 const userRoute = require('./routes/user');
+const productRoute = require('./routes/product');
 
 ///connect to mongoDB
 const mongoose = require("mongoose");
@@ -21,6 +22,7 @@ mongoose.connection.once("open", () => console.log('connected 123456789'))
 app.use(bodyParser.json());
 
 app.use('/user', userRoute);
+app.use('/product', productRoute);
 //routes///
 app.get('/', (req, res) => {
     res.send('jhdasghdajsdgjhasgdjhasg');

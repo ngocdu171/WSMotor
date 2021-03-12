@@ -1,36 +1,52 @@
 const express = require('express');
 const router = express.Router();
-// const db = require('../config/connection');
-const db = require('../db');
+const Product = require('../models/ProductModel');
 
-router.get('/', (req, res) => {
-    db.query('SELECT * FROM tbl_product ')
-    .then(results => {
-        res.json(results);
-        res.status(200);
-    })
-    .catch(error => {
-        console.log(error);
-        res.status(500);
-    })
-    // res.status(200).json(result);
-})
-
-router.get('/:idproduct', (req, res) => {
-    db.query('SELECT * FROM tbl_product where idProduct = ?', [req.params.idproduct])
-    .then(results => {
-        res.json(results);
-        res.status(200);
-    })
-    .catch(error => {
-        console.error(error);
-        res.status(500);
+router.get('/', async (req, res) => {
+    await Product.find({}, (err, results) => {
+        if(err) {
+            console.log(err);
+        }
+        else {
+            res.json(results)
+        }
     })
 })
 
-router.post('/', (req, res) => {
-    res.send(req.body);
-    console.log(req.body);
+router.get('/:idProduct', async (req, res) => {
+    const item = await Product.find({idProduct: req.params.idProduct})
+        if(item.length === 0) {
+            res.json({message: "No result"})
+        }
+        else {
+            res.json(item);
+        }
+})
+
+router.post('/addProduct', (req, res) => {
+    const item = new Product({
+        idProduct: req.body.idProduct,
+        nameProduct: req.body.nameProduct,
+        amountProduct:req.body.amountProduct,
+        S:req.body.S,
+        M:req.body.M,
+        L:req.body.L,
+        imgProduct:req.body.idProduct,
+        priceProduct: req.body.priceProduct,
+        desProduct: req.body.desProduct,
+        idCat: req.body.idCat,
+        showHide: req.body.showHide,
+        views: req.body.views
+    })
+    item.save()
+    .then(results => {
+        console.log(results);
+        res.json({message: "create success!"})
+    })
+    .catch(err => {
+        res.json(err);
+    })
+    //res.send("route post");
 })
 
 module.exports = router;
