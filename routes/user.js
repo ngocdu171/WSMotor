@@ -4,8 +4,8 @@ const router = express.Router();
 const User = require('../models/UserModel');
 const bcrypt = require('bcryptjs');
 
-router.get('/', (req, res) => {
-    User.find({}, function(err, results){
+router.get('/', async (req, res) => {
+    await User.find({}, function(err, results){
         if(err){
             console.log(err);
         }
@@ -16,26 +16,32 @@ router.get('/', (req, res) => {
 });
 
 router.post('/register', async (req, res) =>{
-    const saltRounds = 4;
-    const passwordHash = await bcrypt.hash(req.body.password, saltRounds)
-    const user = new User({
-        idUser: req.body.idUser,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        username: req.body.username,
-        password: passwordHash,
-        phone: req.body.phone,
-        address: req.body.address
-    })
-    
-    await user.save()
-    .then(data => {
-        res.json(data);
-    })
-    .catch(err => {
-        res.json({message: err})
-    })
+    const emailFind = await User.find({email: req.body.email});
+    if(emailFind.length > 0) {
+        res.json({message: "email existed!!!!"});
+    }
+    else {
+        const saltRounds = 4;
+        const passwordHash = await bcrypt.hash(req.body.password, saltRounds);
+        const user = new User({
+            idUser: req.body.idUser,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            email: req.body.email,
+            username: req.body.username,
+            password: passwordHash,
+            phone: req.body.phone,
+            address: req.body.address
+        })
+        user.save()
+        .then(data => {
+            console.log(data);
+            res.json({message: "register success!"});
+        })
+        .catch(err => {
+            res.json({message: err})
+        })
+    }
 });
 
 router.get('/login', async(req, res) => {
