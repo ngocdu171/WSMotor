@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 
 const userRoute = require('./routes/user');
 const productRoute = require('./routes/product');
+const catalogRoute = require('./routes/catalog');
 
 ///connect to mongoDB
 const mongoose = require("mongoose");
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 
 app.use('/user', userRoute);
 app.use('/product', productRoute);
+app.use('/catalog', catalogRoute);
 //routes///
 app.get('/', (req, res) => {
     res.send('jhdasghdajsdgjhasgdjhasg');
